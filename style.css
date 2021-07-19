@@ -48,13 +48,14 @@ button:hover {
     margin-bottom: 1em;
 }
 
-.output .previous-operand {
-    color: white;
-    font-size: 1.5rem;
-}
-
+.output .previous-operand,
 .output .current-operand {
     color: white;
     font-size: 1.5rem;
-    letter-spacing: 5px;
+    letter-spacing: 8px;
+}
+
+.current-operand {
+    font-size: 2rem;
+    font-weight: bold;
 }

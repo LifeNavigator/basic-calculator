@@ -1,92 +1,44 @@
 'use strict'
 
-/*
-PSUEDO Code
-    1. Define a Class called calculator or a function   xx
-    2. There are arrays called leftSide and RightSide where the numbers will be stored  xx
-    3. When a user clicks a number, define a function isLeftSideEmpty to check if LeftSide is empty xx
-    4. If it is empty, then stores the number on leftSide until an operand is clicked
-    5. Define a variable called operandClicked that checks if an operand is clicked
-    6. if clicked, check if isleftSideEmpty = false, if user clicks a number btn, save on rightSide.
-    7. If another operator is clicked, replace operator and repeat (6)
-    8. Check if both array is filled after a user clicks another operator or =
-    9. If so run operate(operator, leftSide, rightSide)
-    
-Additional for accuracy
-    1. When operate() runs, the result is saved on leftSide
-    2. Whenever any btn is clicked its value is displayed on screen
-*/
-
-
 const numberBtn = document.querySelectorAll('.number');
 const operator = document.querySelectorAll('.operator');
 const decimal = document.querySelector('.decimal');
+const del = document.querySelector('.delete');
+const clr = document.querySelector('.clear');
 const displayCurrentOp = document.querySelector('.current-operand');
-let displayPrevOp = document.querySelector('.previous-operand');
+const displayPrevOp = document.querySelector('.previous-operand');
 
-let leftSide = [];
-let rightSide = []
-let currentOperator;
-// let checkOperator = () => {
-//     const period = leftSide.includes('.') ?
-// }
+let leftSide = [],
+    rightSide = [];
+let prevOperator, currentOperator, prevResult, result = '';
 let operatorIsClicked = false;
-let savedResult = []
 
-let clearResults = () => {
-    leftSide = [];
-    rightSide = [];
-}
-
-let saveResults = (c) => {
-    let savedOperation = [c];
-    displayCurrentOp.textContent = c;
-}
-
-
+//computational functions
 let add = (a, b) => {
-    let c = parseFloat(a) + parseFloat(b);
-    leftSide = [c];
-    rightSide = [];
-    operatorIsClicked = false;
-    displayCurrentOp.textContent = c;
-    return console.log(c)
+    return result = parseFloat(a) + parseFloat(b);
 }
 
 let subtract = (a, b) => {
-    let c = parseFloat(a) - parseFloat(b);
-    leftSide = [c];
-    rightSide = [];
-    operatorIsClicked = false;
-    displayCurrentOp.textContent = c;
-    return console.log(c);
+    return result = parseFloat(a) - parseFloat(b);
 }
 
 let multiply = (a, b) => {
-    let c = parseFloat(a) * parseFloat(b)
-    leftSide = [c]
-    rightSide = [];
-    operatorIsClicked = false;
-    displayCurrentOp.textContent = c;
-    return console.log(c)
+    return result = parseFloat(a) * parseFloat(b)
 }
 
 let divide = (a, b) => {
-    let c = parseFloat(a) / parseFloat(b)
-    leftSide = [c];
-    rightSide = [];
-    operatorIsClicked = false;
-    displayCurrentOp.textContent = c;
-    return console.log(c);
+    return result = parseFloat(a) / parseFloat(b)
 }
 
+//compute function
 function operate(operator, leftSide, rightSide) {
-    let left = parseInt(leftSide.join(""))
-    let right = parseInt(rightSide.join(""))
-    if (isNaN(left) || isNaN(right)) return
+    let left = parseFloat(leftSide.join(""))
+    let right = parseFloat(rightSide.join(""))
+
     switch (operator) {
-        case "+":
+        case '+':
             add(left, right);
+
             break;
         case "-":
             subtract(left, right);
@@ -95,70 +47,105 @@ function operate(operator, leftSide, rightSide) {
             divide(left, right)
             break;
         case "x":
-            multiply(left, right);
+            multiply(left, right)
             break;
 
         default:
-            console.log('error calling the operations');
+            console.log('error calling the operators. Check the event handlers');
             break;
+    }
+    //check if results is 
+    displayResult(result);
+}
+
+function append(number) {
+    // if(number.classList.contains(number)) return;
+    displayCurrentOp.textContent += number;
+}
+
+function newOperation(a) {
+    leftSide = [a];
+    rightSide = [];
+    prevOperator = currentOperator;
+    currentOperator = '';
+}
+
+// Things to do:
+//     1. Prevent multiple operators being appended
+//     2. Make clear and delete btn Worker
+//     3. Add bullet
+
+function displayResult(result) {
+    if (currentOperator) {
+        displayPrevOp.textContent = result;
+        if (currentOperator == '=') {
+            displayCurrentOp.textContent = result;
+        } else {
+            displayCurrentOp.textContent = result + currentOperator;
+        }
+        newOperation(result);
+    } else {
+        displayCurrentOp.textContent = result;
+        newOperation(result);
     }
 
 }
 
 numberBtn.forEach(btn => {
     btn.addEventListener('click', (event) => {
+        let number = event.target.textContent;
 
-        //if btn is clicked, its value is displayed and added to array
-        const btnValue = btn.textContent;
-        console.log(btnValue)
-        // if (leftSide.includes())
-        if (operatorIsClicked) {
-            displayCurrentOp.textContent += btnValue;
-            rightSide.push(btnValue)
-            console.log(rightSide);
+        if (!prevOperator) {
+            leftSide.push(number);
+            append(number);
+            console.log('leftside:', leftSide);
 
         } else {
-            displayCurrentOp.textContent += btnValue;
-            leftSide.push(btnValue);
-            console.log(leftSide);
-            operatorIsClicked = false;
-
+            rightSide.push(number)
+            append(number);
+            console.log('rightside:', rightSide);
         }
 
-        //the case if an operator is already clicked
     })
 })
-
 
 operator.forEach(op => {
     op.addEventListener('click', (event) => {
+
         let operand = event.target.textContent;
 
-
-        if (operand == '=') {
-            operate(currentOperator, leftSide, rightSide);
-            console.log(operand);
-
-        } else if (leftSide.length > 0 && rightSide.length > 0) {
-            operate(currentOperator, leftSide, rightSide);
-            operatorIsClicked = true;
-            currentOperator = operand;
-
-        } else if (operatorIsClicked & rightSide.length == 0) {
-            currentOperator = operand;
-
-
+        if (operand == '=' || (prevOperator && rightSide.length > 0)) {
+            checkOperation()
+            operate(prevOperator, leftSide, rightSide);
         } else {
-            operatorIsClicked = true;
-            displayCurrentOp.textContent += operand;
-            console.log(operand);
-            console.log(`left arr`, leftSide, `rightSide`, rightSide);
-            currentOperator = event.target.textContent
+            const check = !leftSide 
+            checkOperation();
         }
 
-        //check if operator is clicked
-        // if (operatorIsclicked == false) {
-        //     event.preventDefault();
-        // }
+        function checkOperation() {
+            if (prevOperator && rightSide.length > 0) {
+                return currentOperator = operand;
+            } else if (operand !== '=') {
+                prevOperator = operand;
+                append(operand);
+            } else {
+                return currentOperand = ''
+            }
+        }
+
     })
 })
+
+del.addEventListener('click', (event) => {
+    if (leftSide.length > 0 && !prevOperator) {
+        leftSide.pop()
+        displayResult();
+    } else if (rightSide.length > 0 && prevOperator) {
+        rightSide.pop();
+        displayResult();
+    } else {
+        return
+    }
+})
+
+//check if an
