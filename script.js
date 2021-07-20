@@ -4,7 +4,7 @@ const numberBtn = document.querySelectorAll('.number');
 const operator = document.querySelectorAll('.operator');
 const decimal = document.querySelector('.decimal');
 const del = document.querySelector('.delete');
-const clr = document.querySelector('.clear');
+const clr = document.querySelector('.resetBtn');
 const displayCurrentOp = document.querySelector('.current-operand');
 const displayPrevOp = document.querySelector('.previous-operand');
 
@@ -27,7 +27,21 @@ let multiply = (a, b) => {
 }
 
 let divide = (a, b) => {
-    return result = parseFloat(a) / parseFloat(b)
+    if (a == 0) {
+        alert('Divisible by 0 is not possible')
+        clearAll();
+    } else {
+        return result = parseFloat(a) / parseFloat(b)
+    }
+}
+
+function clearAll() {
+    leftSide = [];
+    rightSide = [];
+    currentOperator = '';
+    prevOperator = '';
+    displayCurrentOp.textContent = '';
+    displayPrevOp.textContent = ''
 }
 
 //compute function
@@ -118,7 +132,7 @@ operator.forEach(op => {
             checkOperation()
             operate(prevOperator, leftSide, rightSide);
         } else {
-            const check = !leftSide 
+            const check = !leftSide
             checkOperation();
         }
 
@@ -147,5 +161,7 @@ del.addEventListener('click', (event) => {
         return
     }
 })
+
+clr.addEventListener('click', clearAll)
 
 //check if an
