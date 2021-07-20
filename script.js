@@ -15,15 +15,18 @@ let operatorIsClicked = false;
 
 //computational functions
 let add = (a, b) => {
-    return result = parseFloat(a) + parseFloat(b);
+    result = parseFloat(a) + parseFloat(b);
+    return result.toFixed(6)
 }
 
 let subtract = (a, b) => {
-    return result = parseFloat(a) - parseFloat(b);
+    result = parseFloat(a) - parseFloat(b);
+    return result.toFixed(6)
 }
 
 let multiply = (a, b) => {
-    return result = parseFloat(a) * parseFloat(b)
+    result = parseFloat(a) * parseFloat(b)
+    return result.toFixed(6)
 }
 
 let divide = (a, b) => {
@@ -31,7 +34,8 @@ let divide = (a, b) => {
         alert('Divisible by 0 is not possible')
         clearAll();
     } else {
-        return result = parseFloat(a) / parseFloat(b)
+        result = parseFloat(a) / parseFloat(b)
+        return result.toFixed(6)
     }
 }
 
